@@ -69,5 +69,16 @@ function openCart(){renderCart();document.getElementById('cartShell').classList.
 function closeCart(){document.getElementById('cartShell').classList.remove('open');document.getElementById('cartShell').setAttribute('aria-hidden','true');document.body.classList.remove('cartlocked')}
 document.getElementById('search').addEventListener('input',function(e){state.search=e.target.value;render()});document.getElementById('sort').addEventListener('change',function(e){state.sort=e.target.value;render()});document.getElementById('close').onclick=closeModal;document.getElementById('prev').onclick=function(){move(-1)};document.getElementById('next').onclick=function(){move(1)};modal.addEventListener('click',function(e){if(e.target===modal)closeModal()});document.getElementById('cartFab').onclick=openCart;document.querySelectorAll('[data-cart-close]').forEach(function(el){el.onclick=closeCart});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.getElementById('cartShell').classList.contains('open')){closeCart();return}if(!modal.classList.contains('open'))return;if(e.key==='Escape')closeModal();if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1)});var touchStart=0;document.getElementById('stage').addEventListener('touchstart',function(e){touchStart=e.changedTouches[0].clientX},{passive:true});document.getElementById('stage').addEventListener('touchend',function(e){var delta=e.changedTouches[0].clientX-touchStart;if(Math.abs(delta)>45)move(delta>0?-1:1)},{passive:true});updateCartCount();renderFilters();render();
 </script>
+<script id="kosmes-price-scroll-fix">
+(function(){
+  if(!window.PRODUCTS)return;
+  PRODUCTS.forEach(function(product){if(typeof product.showStartingFrom!=='boolean')product.showStartingFrom=product.macro==='Arredo'});
+  var originalRender=window.render;
+  window.render=function(){originalRender();if(window.state&&state.macro==='Elettrico')document.querySelectorAll('#grid .from').forEach(function(node){node.remove()})};
+  var originalOpenModal=window.openModal;
+  window.openModal=function(id){originalOpenModal(id);var dialog=document.querySelector('#modal .dialog');if(dialog)dialog.scrollTop=0;if(window.current&&current.macro==='Elettrico'){var label=document.querySelector('#modal .detailprice .from');if(label)label.remove()}};
+  window.render();
+})();
+</script>
 </body>
 </html>
